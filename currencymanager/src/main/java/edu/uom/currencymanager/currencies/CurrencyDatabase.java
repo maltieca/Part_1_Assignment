@@ -17,10 +17,10 @@ public class CurrencyDatabase {
     String currenciesFile = "target" + File.separator + "classes" + File.separator + "currencies.txt";
 
     public CurrencyDatabase() throws Exception {
-        init();
+        init(currenciesFile);
     }
 
-    public void init() throws Exception {
+    public void init(String file) throws Exception {
         //Initialise currency server
         currencyServer = new DefaultCurrencyServer();
 
