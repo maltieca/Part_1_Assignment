@@ -1,10 +1,20 @@
 package com.uom.cps3230;
 
-
 import com.uom.cps3230.enums.ModelWebsiteStates;
+import junit.framework.Assert;
 import nz.ac.waikato.modeljunit.Action;
 import nz.ac.waikato.modeljunit.FsmModel;
-import org.junit.Assert;
+import nz.ac.waikato.modeljunit.GraphListener;
+import nz.ac.waikato.modeljunit.GreedyTester;
+import nz.ac.waikato.modeljunit.StopOnFailureListener;
+import nz.ac.waikato.modeljunit.Tester;
+import nz.ac.waikato.modeljunit.coverage.ActionCoverage;
+import nz.ac.waikato.modeljunit.coverage.StateCoverage;
+import nz.ac.waikato.modeljunit.coverage.TransitionPairCoverage;
+import org.junit.Test;
+
+import java.io.FileNotFoundException;
+import java.util.Random;
 
 public class ModelWebsiteSystemTest implements FsmModel {
     private ModelWebsiteStates modelState;
@@ -155,6 +165,20 @@ public class ModelWebsiteSystemTest implements FsmModel {
         Assert.assertEquals("The model's add product  state doesn't match the SUT's state.", addProduct, sut.isAddProduct());
 
 
+    }
+
+    @Test
+    public void ModelBasedSystemRunner() throws FileNotFoundException {
+        final Tester tester = new GreedyTester(new ModelWebsiteSystemTest());
+        tester.setRandom(new Random());
+        final GraphListener graphListener = tester.buildGraph();
+        tester.addListener(new StopOnFailureListener());
+        tester.addListener("verbose");
+        tester.addCoverageMetric(new TransitionPairCoverage());
+        tester.addCoverageMetric(new StateCoverage());
+        tester.addCoverageMetric(new ActionCoverage());
+        tester.generate(500);
+        tester.printCoverage();
     }
 }
 
